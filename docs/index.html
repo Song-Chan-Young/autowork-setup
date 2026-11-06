@@ -82,7 +82,7 @@ function load(u) { cur = u; $("help").hidden = true; $("f").hidden = false; if (
   if (!standalone) { bar("<button class='x' onclick='bar(\"\")'>×</button>사파리 아래 [공유] &gt; <b>[홈 화면에 추가]</b> 하고 홈 화면 아이콘으로 열면 알림도 받아요."); return; }
   if (!("PushManager" in window)) { bar("<button class='x' onclick='bar(\"\")'>×</button>이 아이폰은 알림을 못 받아요(iOS 16.4 이상 필요)."); return; }
   if (Notification.permission === "granted") { pushReady(best.u).catch(() => {}); return; }   // 주소가 바뀌었을 수 있어 매번 다시 알려 줌
-  bar("<button class='x' onclick='bar(\"\")'>×</button>NPLM·부탁 끝남 알림을 받으려면 눌러 주세요.<br><button onclick='enablePush(cur)'>알림 켜기</button>");
+  bar("<button class='x' onclick='bar(\"\")'>×</button>부탁한 일이 끝났을 때 같은 알림을 받으려면 눌러 주세요.<br><button onclick='enablePush(cur)'>알림 켜기</button>");
 })();
 </script>
 </body>
