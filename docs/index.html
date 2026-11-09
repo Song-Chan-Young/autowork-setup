@@ -70,11 +70,14 @@ function load(u) { cur = u; $("help").hidden = true; $("f").hidden = false; if (
 
 (async () => {
   const qs = new URLSearchParams(location.search);
-  // (원본, 2026-11-09 송찬영 [AI]) if (qs.get("u")) { await saveUrl(qs.get("u")); history.replaceState(null, "", location.pathname); }
-  // 2026-11-09 10:13 송찬영 [AI] 주소(?u=)를 지우지 않음 - 아이폰 홈 화면 앱은 사파리와 저장소가 따로라, 추가할 때의 주소로만 PC 주소를 받음
-  if (qs.get("u")) await saveUrl(qs.get("u"));
+  const initialUrl = qs.get("u");
   const a = fromLocal(), b = await urlFromCache();
-  const best = [a, b].filter(Boolean).sort((x, y) => y.t - x.t)[0];
+  let best = [a, b].filter(Boolean).sort((x, y) => y.t - x.t)[0];
+  // 홈 화면 아이콘의 QR 주소는 최초 실행에만 사용합니다.
+  if (initialUrl && (!standalone || !best)) {
+    await saveUrl(initialUrl);
+    best = { u: initialUrl };
+  }
   if (!best) { $("help").hidden = false; return; }
   load(best.u);
   if ("serviceWorker" in navigator) {
