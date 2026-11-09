@@ -17,14 +17,26 @@
   #bar.show { display: block; }
   #bar button { margin-top: 8px; font: inherit; font-weight: 700; border: 0; border-radius: 999px; padding: 8px 18px; background: #2f7fe8; color: #fff; }
   #bar .x { float: right; background: none; color: #1d5bbf; padding: 0 4px; margin: 0; font-size: 18px; }
+  [hidden] { display: none !important; }
+  #connection { padding: calc(8px + env(safe-area-inset-top)) 14px 8px; font-size: 14px; }
+  #connection input { width: min(100%, 360px); box-sizing: border-box; font-size: 16px; }
   iframe { display: block; width: 100%; border: 0; height: 100vh; height: 100dvh; }
-  #bar.show + iframe { height: calc(100dvh - 120px); }
+  #bar.show ~ iframe { height: calc(100dvh - 120px); }
   .help { padding: calc(40px + env(safe-area-inset-top)) 24px; text-align: center; line-height: 1.7; }
   .help img { width: 72px; }
 </style>
 </head>
 <body>
 <div id="bar"></div>
+<details id="connection">
+  <summary>화면이 안 열리나요?</summary>
+  <form id="reconnect">
+    <p>회사 PC에서 [폰으로 보기]를 다시 켜고, 새 QR 링크를 복사해 붙여넣으세요. 기존 홈 화면 아이콘에서 연결 주소를 갱신합니다.</p>
+    <input id="connection-url" type="url" required aria-label="새 QR 링크" placeholder="새 QR 링크 붙여넣기">
+    <button type="submit">다시 연결</button>
+    <p id="connection-status" role="status"></p>
+  </form>
+</details>
 <iframe id="f" title="내 업무자동화" hidden></iframe>
 <div class="help" id="help" hidden>
   <img src="icon.png" alt=""><h2>내 업무자동화</h2>
@@ -67,6 +79,29 @@ async function enablePush(u) {
 }
 let cur = "";
 function load(u) { cur = u; $("help").hidden = true; $("f").hidden = false; if ($("f").src !== u) $("f").src = u; }
+
+$("reconnect").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  let target;
+  try {
+    const link = new URL($("connection-url").value.trim());
+    target = link.origin === location.origin && link.pathname === location.pathname
+      ? new URL(link.searchParams.get("u")) : link;
+    if (target.protocol !== "https:" || !target.hostname.endsWith(".trycloudflare.com") ||
+        !target.searchParams.get("t") || target.username || target.password) throw new Error();
+  } catch (e) {
+    $("connection-status").textContent = "PC에서 새로 표시된 QR 링크를 붙여넣어 주세요.";
+    return;
+  }
+  await saveUrl(target.href);
+  $("connection-url").value = "";
+  $("connection-status").textContent = "";
+  $("connection").open = false;
+  load(target.href);
+  if (standalone && "Notification" in window && Notification.permission === "granted") {
+    pushReady(target.href).catch(() => {});
+  }
+});
 
 (async () => {
   const qs = new URLSearchParams(location.search);
