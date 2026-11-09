@@ -1,7 +1,6 @@
 {
   "name": "내 업무자동화",
   "short_name": "업무자동화",
-  "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "background_color": "#f6f6f4",
