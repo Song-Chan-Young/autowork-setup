@@ -4,14 +4,14 @@ self.addEventListener("activate", (e) => e.waitUntil(self.clients.claim()));
 
 self.addEventListener("push", (e) => {
   let d = {};
-  try { d = e.data.json(); } catch (x) { d = { title: "내 업무자동화", body: e.data ? e.data.text() : "" }; }
+  try { d = e.data.json(); } catch (x) { d = { title: "오늘의할일", body: e.data ? e.data.text() : "" }; }
   e.waitUntil((async () => {
     if (d.url) {
       const c = await caches.open("aw");
       await c.put("aw-url", new Response(JSON.stringify({ u: d.url, t: Date.now() })));
       for (const w of await self.clients.matchAll({ type: "window", includeUncontrolled: true })) w.postMessage({ url: d.url });
     }
-    await self.registration.showNotification(d.title || "내 업무자동화", { body: d.body || "", icon: "icon.png", badge: "icon.png", tag: d.tag || undefined });
+    await self.registration.showNotification(d.title || "오늘의할일", { body: d.body || "", icon: "icon.png", badge: "icon.png", tag: d.tag || undefined });
   })());
 });
 

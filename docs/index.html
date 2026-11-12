@@ -5,12 +5,13 @@
 <!-- 2026-11-06 16:20 송찬영 [AI] 폰 홈 화면용 고정 주소 앱 - 안에 PC 의 '폰으로 보기'(바뀌는 주소)를 띄우고, 아이폰 알림(Web Push)을 받음 -->
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="내 업무자동화">
+<meta name="apple-mobile-web-app-title" content="오늘의할일">
 <meta name="theme-color" content="#f6f6f4">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon.png">
 <link rel="icon" href="icon.png">
-<title>내 업무자동화</title>
+<!-- 2026-11-12 17:49 송찬영 [AI] 앱 이름 '내 업무자동화' -> '오늘의할일' (이 파일·manifest.json·sw.js) -->
+<title>오늘의할일</title>
 <style>
   html, body { margin: 0; height: 100%; background: #f6f6f4; font-family: -apple-system, "Apple SD Gothic Neo", sans-serif; color: #1f1f1f; }
   #bar { display: none; padding: calc(10px + env(safe-area-inset-top)) 14px 10px; background: #e3edfd; color: #1d5bbf; font-size: 14.5px; line-height: 1.5; }
@@ -37,9 +38,9 @@
     <p id="connection-status" role="status"></p>
   </form>
 </details>
-<iframe id="f" title="내 업무자동화" hidden></iframe>
+<iframe id="f" title="오늘의할일" hidden></iframe>
 <div class="help" id="help" hidden>
-  <img src="icon.png" alt=""><h2>내 업무자동화</h2>
+  <img src="icon.png" alt=""><h2>오늘의할일</h2>
   <p>PC 프로그램의 [⚙ 컴퓨터 환경설정] &gt; [폰으로 보기]를 켜고<br>나온 QR 을 아이폰 카메라로 찍어 열어 주세요.</p>
 </div>
 <script>
@@ -72,7 +73,7 @@ async function pushReady(u) {
 async function enablePush(u) {
   try {
     const p = await Notification.requestPermission();
-    if (p !== "granted") { bar("알림이 꺼져 있어요. 아이폰 [설정] &gt; [알림] &gt; [내 업무자동화]에서 켜 주세요."); return; }
+    if (p !== "granted") { bar("알림이 꺼져 있어요. 아이폰 [설정] &gt; [알림] &gt; [오늘의할일]에서 켜 주세요."); return; }
     await pushReady(u);
     bar("");
   } catch (e) { bar("알림 켜기가 안 됐어요. PC 프로그램이 켜져 있는지 보고 다시 눌러 주세요.<br><button onclick='enablePush(cur)'>다시 알림 켜기</button>"); }
